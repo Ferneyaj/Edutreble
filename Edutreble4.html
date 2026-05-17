@@ -1,0 +1,334 @@
+<!-- Edutreble4.html (Modificado) -->
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Edutreble</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+  <!-- Agregando Feather Icons para los botones de menú y posible logo -->
+  <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+  <style>
+    :root {
+      /* Colores base para el modo claro */
+      --light-bg-start: #e0f2f7;
+      --light-bg-end: #d1eff7;
+      --light-text-color: #1e1e1e;
+      --light-sidebar-bg: rgba(255, 255, 255, 0.9);
+      --light-sidebar-border: rgba(0, 0, 0, 0.1);
+      --light-card-shadow: rgba(0, 0, 0, 0.08);
+
+      /* Colores base para el modo oscuro */
+      --dark-bg-start: #2c3e50;
+      --dark-bg-end: #34495e;
+      --dark-text-color: #fdfdfd;
+      --dark-sidebar-bg: rgba(44, 44, 44, 0.9);
+      --dark-sidebar-border: rgba(255, 255, 255, 0.1);
+      --dark-card-shadow: rgba(0, 0, 0, 0.3);
+
+      /* Colores de acento */
+      --primary-color: #7a5af5;
+      --primary-hover: #5b3bd6;
+      --gradient-start: #8e71ff;
+      --gradient-end: #7a5af5;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    /* Modos de tema */
+    .app.light {
+      background: linear-gradient(135deg, var(--light-bg-start), var(--light-bg-end));
+      color: var(--light-text-color);
+    }
+
+    .app.dark {
+      background: linear-gradient(135deg, var(--dark-bg-start), var(--dark-bg-end));
+      color: var(--dark-text-color);
+    }
+
+    .container {
+      display: flex;
+      height: 100vh;
+      width: 100%;
+    }
+
+    .sidebar {
+      width: 250px; /* Ancho ligeramente mayor para más espacio */
+      background-color: var(--light-sidebar-bg);
+      padding: 20px;
+      position: fixed; /* Fijo para que no se mueva con el scroll */
+      height: 100%;
+      top: 0;
+      left: 0;
+      transform: translateX(0); /* Por defecto visible */
+      transition: transform 0.3s ease-in-out, background-color 0.3s;
+      box-shadow: 2px 0 10px var(--light-card-shadow);
+      backdrop-filter: blur(5px); /* Efecto de cristal esmerilado */
+      border-right: 1px solid var(--light-sidebar-border);
+    }
+
+    .app.dark .sidebar {
+      background-color: var(--dark-sidebar-bg);
+      box-shadow: 2px 0 10px var(--dark-card-shadow);
+      border-right: 1px solid var(--dark-sidebar-border);
+    }
+
+    .sidebar.hidden {
+      transform: translateX(-100%);
+    }
+
+    .menu-toggle {
+      position: fixed; /* Fijo para que siempre sea accesible */
+      top: 20px;
+      left: 20px;
+      font-size: 28px; /* Icono más grande */
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: inherit; /* Hereda el color del tema */
+      z-index: 100; /* Asegura que esté por encima de todo */
+      padding: 5px;
+      border-radius: 5px;
+      transition: color 0.3s, background-color 0.3s;
+    }
+    .menu-toggle:hover {
+        background-color: rgba(0,0,0,0.05);
+    }
+    .app.dark .menu-toggle:hover {
+        background-color: rgba(255,255,255,0.05);
+    }
+
+
+    .content {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      padding: 20px;
+      text-align: center;
+      margin-left: 0; /* Por defecto, sin margen */
+      transition: margin-left 0.3s ease-in-out;
+    }
+    .sidebar.hidden + .content {
+      margin-left: 0; /* Cuando la sidebar está oculta, no hay margen */
+    }
+    .sidebar:not(.hidden) + .content {
+      margin-left: 250px; /* Cuando la sidebar está visible, el contenido se desplaza */
+    }
+
+
+    .logo {
+      font-size: 100px; /* Logo más grande */
+      margin-bottom: 25px;
+      color: var(--primary-color); /* Color del logo más vivo */
+      text-shadow: 0 5px 15px rgba(122, 90, 245, 0.3); /* Sombra para el logo */
+      transition: color 0.3s, text-shadow 0.3s;
+    }
+    .app.dark .logo {
+        color: #b39cfb; /* Logo más claro en modo oscuro */
+        text-shadow: 0 5px 15px rgba(179, 156, 251, 0.2);
+    }
+
+    .app-name {
+      font-size: 55px; /* Título de la app más grande */
+      font-weight: 700; /* Más audaz */
+      letter-spacing: 2px; /* Espaciado entre letras */
+      color: inherit;
+      margin-bottom: 10px; /* Espacio para subtítulo si lo hubiera */
+    }
+
+    .app-tagline {
+        font-size: 18px;
+        color: rgba(0, 0, 0, 0.7);
+        margin-bottom: 30px;
+    }
+    .app.dark .app-tagline {
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    .start-btn {
+      margin-top: 30px;
+      padding: 16px 50px; /* Botón más grande */
+      font-size: 20px; /* Texto más grande */
+      border: none;
+      border-radius: 30px; /* Bordes más redondeados */
+      background: linear-gradient(45deg, var(--gradient-start), var(--gradient-end)); /* Degradado */
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 10px 20px rgba(122, 90, 245, 0.3); /* Sombra más pronunciada */
+      transition: all 0.3s ease; /* Transiciones suaves */
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    .start-btn:hover {
+      transform: translateY(-5px); /* Efecto "lift" al hacer hover */
+      box-shadow: 0 15px 25px rgba(122, 90, 245, 0.4);
+      background: linear-gradient(45deg, var(--gradient-end), var(--gradient-start)); /* Invertir degradado al hover */
+    }
+
+    .version {
+      position: absolute;
+      bottom: 20px; /* Un poco más arriba */
+      right: 25px; /* Un poco más a la derecha */
+      font-size: 13px;
+      opacity: 0.7; /* Ligeramente más visible */
+      letter-spacing: 0.5px;
+    }
+
+    .theme-toggle {
+      margin-top: 30px; /* Más espacio */
+      display: flex;
+      flex-direction: column;
+      gap: 15px; /* Espacio entre opciones */
+    }
+
+    input[type="radio"] {
+      margin-right: 10px;
+      accent-color: var(--primary-color); /* Color del radio button */
+      transform: scale(1.1); /* Hacer el radio un poco más grande */
+    }
+
+    label {
+      display: flex; /* Para alinear el texto con el radio */
+      align-items: center;
+      margin-bottom: 0; /* Resetear margin-bottom */
+      font-size: 16px;
+      cursor: pointer;
+      padding: 8px 0;
+      transition: color 0.3s;
+    }
+    label:hover {
+        color: var(--primary-color);
+    }
+
+    .sidebar strong {
+      display: block;
+      margin-bottom: 20px;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--primary-color);
+      letter-spacing: 0.5px;
+    }
+    .app.dark .sidebar strong {
+      color: #b39cfb;
+    }
+
+    /* Estilos para el icono SVG del logo (opcional, si decides reemplazar el emoji) */
+    .logo-svg {
+        width: 100px;
+        height: 100px;
+        stroke: var(--primary-color);
+        stroke-width: 2;
+        fill: none;
+        transition: stroke 0.3s;
+    }
+    .app.dark .logo-svg {
+        stroke: #b39cfb;
+    }
+
+  </style>
+</head>
+<body>
+  <div id="app" class="app light">
+    <div class="container">
+      <div id="sidebar" class="sidebar">
+        <strong><i data-feather="sun"></i> Tema</strong> <!-- Icono de sol para el tema -->
+        <div class="theme-toggle">
+          <label><input type="radio" name="theme" value="light" checked> Claro</label>
+          <label><input type="radio" name="theme" value="dark"> Oscuro</label>
+        </div>
+      </div>
+      <div class="content">
+        <button class="menu-toggle" onclick="toggleSidebar()">
+            <i data-feather="menu"></i> <!-- Icono de menú -->
+        </button>
+        <!-- Puedes usar un SVG para el logo en lugar del emoji para un aspecto más profesional -->
+        <div class="logo">
+             <i data-feather="music"></i> <!-- Icono de música de Feather Icons -->
+            <!-- O si prefieres un SVG más elaborado, descomenta y reemplaza: -->
+            <!-- <svg class="logo-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 18V5l12-2v13"></path>
+                <circle cx="6" cy="18" r="3"></circle>
+                <circle cx="18" cy="16" r="3"></circle>
+            </svg> -->
+        </div>
+        <div class="app-name">Edutreble</div>
+        <div class="app-tagline">Aprende música de forma sencilla y divertida</div>
+        <a href="Edutreble-Cursos.html"><button
+         class="start-btn">Iniciar Curso</button></a>
+        <div class="version">Versión Beta v2.0</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  const radios = document.querySelectorAll('input[name="theme"]');
+  const app = document.getElementById('app');
+  const sidebar = document.getElementById('sidebar');
+  const menuToggle = document.querySelector('.menu-toggle');
+
+  // Inicializar Feather Icons
+  feather.replace();
+
+  // Verificar si ya existe un tema guardado en localStorage
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme) {
+    app.className = `app ${savedTheme}`;
+    // Marcar el radio del tema previamente seleccionado
+    const savedRadio = document.querySelector(`input[name="theme"][value="${savedTheme}"]`);
+    if (savedRadio) {
+        savedRadio.checked = true;
+    }
+  }
+
+  // Cambiar tema y guardarlo en localStorage
+  radios.forEach(radio => {
+    radio.addEventListener('change', () => {
+      app.className = `app ${radio.value}`;
+      localStorage.setItem('theme', radio.value);  // Guardar la elección del usuario
+    });
+  });
+
+  function toggleSidebar() {
+    sidebar.classList.toggle('hidden');
+    // Cambiar el icono del menú al abrir/cerrar la sidebar
+    if (sidebar.classList.contains('hidden')) {
+        menuToggle.innerHTML = '<i data-feather="menu"></i>';
+    } else {
+        menuToggle.innerHTML = '<i data-feather="x"></i>'; // Icono de cerrar
+    }
+    feather.replace(); // Volver a inicializar los iconos después de cambiar el HTML
+  }
+
+  // Asegurar que el contenido se ajuste si la sidebar se cierra en pantallas grandes
+  window.addEventListener('resize', () => {
+      if (window.innerWidth > 768 && sidebar.classList.contains('hidden')) {
+          sidebar.classList.remove('hidden');
+          menuToggle.innerHTML = '<i data-feather="x"></i>';
+          feather.replace();
+      }
+  });
+
+  // Ocultar la sidebar por defecto en pantallas pequeñas para una mejor experiencia móvil
+  if (window.innerWidth < 768) {
+      sidebar.classList.add('hidden');
+      menuToggle.innerHTML = '<i data-feather="menu"></i>';
+      feather.replace();
+  }
+</script>
+</body>
+</html>

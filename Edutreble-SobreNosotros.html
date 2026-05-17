@@ -1,0 +1,409 @@
+<!-- Edutreble-SobreNosotros.html -->
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sobre nosotros - Edutreble</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+  <style>
+    :root {
+      /* Colores base para el modo claro */
+      --light-bg-start: #e0f2f7;
+      --light-bg-end: #d1eff7;
+      --light-text-color: #1e1e1e;
+      --light-sidebar-bg: rgba(255, 255, 255, 0.9);
+      --light-sidebar-border: rgba(0, 0, 0, 0.1);
+      --light-card-shadow: rgba(0, 0, 0, 0.08);
+
+      /* Colores base para el modo oscuro */
+      --dark-bg-start: #2c3e50;
+      --dark-bg-end: #34495e;
+      --dark-text-color: #fdfdfd;
+      --dark-sidebar-bg: rgba(44, 44, 44, 0.9);
+      --dark-sidebar-border: rgba(255, 255, 255, 0.1);
+      --dark-card-shadow: rgba(0, 0, 0, 0.3);
+
+      /* Colores de acento */
+      --primary-color: #7a5af5;
+      --primary-hover: #5b3bd6;
+
+      /* Colores para las secciones de texto */
+      --section-bg-light: #ffffff;
+      --section-border-light: rgba(0, 0, 0, 0.08);
+      --section-bg-dark: #3a3a3a;
+      --section-border-dark: rgba(255, 255, 255, 0.1);
+      --section-text-light: #333333;
+      --section-text-dark: #e0e0e0;
+      --section-heading-light: #1e1e1e;
+      --section-heading-dark: #fdfdfd;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      transition: background 0.3s, color 0.3s;
+    }
+    .app.light {
+      background: linear-gradient(135deg, var(--light-bg-start), var(--light-bg-end));
+      color: var(--light-text-color);
+    }
+    .app.dark {
+      background: linear-gradient(135deg, var(--dark-bg-start), var(--dark-bg-end));
+      color: var(--dark-text-color);
+    }
+
+    .container {
+      display: flex;
+      height: 100vh;
+      width: 100%;
+    }
+
+    .sidebar {
+      width: 250px;
+      background-color: var(--light-sidebar-bg);
+      padding: 60px 20px 20px 20px;
+      position: fixed;
+      height: 100%;
+      top: 0;
+      left: 0;
+      transform: translateX(0);
+      transition: transform 0.3s ease-in-out, background-color 0.3s;
+      box-shadow: 2px 0 10px var(--light-card-shadow);
+      backdrop-filter: blur(5px);
+      border-right: 1px solid var(--light-sidebar-border);
+      display: flex;
+      flex-direction: column;
+    }
+    .app.dark .sidebar {
+      background-color: var(--dark-sidebar-bg);
+      box-shadow: 2px 0 10px var(--dark-card-shadow);
+      border-right: 1px solid var(--dark-sidebar-border);
+    }
+    .sidebar.hidden {
+      transform: translateX(-100%);
+    }
+
+    .menu-toggle {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      font-size: 28px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: inherit;
+      z-index: 100;
+      padding: 5px;
+      border-radius: 5px;
+      transition: color 0.3s, background-color 0.3s;
+    }
+    .menu-toggle:hover {
+        background-color: rgba(0,0,0,0.05);
+    }
+    .app.dark .menu-toggle:hover {
+        background-color: rgba(255,255,255,0.05);
+    }
+
+    .content {
+      flex-grow: 1;
+      padding: 40px;
+      overflow-y: auto;
+      margin-left: 0;
+      transition: margin-left 0.3s ease-in-out;
+    }
+    .sidebar.hidden + .content {
+      margin-left: 0;
+    }
+    .sidebar:not(.hidden) + .content {
+      margin-left: 250px;
+    }
+
+    .title {
+      font-size: 40px;
+      font-weight: 700;
+      margin-bottom: 40px;
+      text-align: center;
+      letter-spacing: 1.5px;
+      color: var(--primary-color);
+      text-shadow: 0 3px 8px rgba(122, 90, 245, 0.2);
+    }
+    .app.dark .title {
+        color: #b39cfb;
+        text-shadow: 0 3px 8px rgba(179, 156, 251, 0.15);
+    }
+
+    /* Estilos para los elementos de la sidebar */
+    .sidebar-section {
+        color: inherit;
+        text-decoration: none;
+        display: block;
+        padding: 12px 0;
+        margin-bottom: 10px;
+        font-size: 17px;
+        font-weight: 600;
+        transition: color 0.2s, transform 0.2s;
+        border-radius: 8px;
+    }
+    .sidebar-section:hover {
+        color: var(--primary-hover);
+        transform: translateX(5px);
+    }
+    .sidebar-section strong {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: inherit;
+    }
+
+    /* Estilo para los iconos dentro de la sidebar */
+    .icon {
+        width: 22px;
+        height: 22px;
+        stroke-width: 2.5;
+        color: var(--primary-color);
+        transition: color 0.2s;
+    }
+    .app.dark .icon {
+        color: #b39cfb;
+    }
+    .sidebar-section:hover .icon {
+        color: var(--primary-hover);
+    }
+
+    /* --- Estilos específicos de la página Sobre nosotros --- */
+    .about-content {
+        max-width: 800px;
+        margin: 0 auto;
+        padding-top: 20px;
+        text-align: left;
+    }
+
+    .about-section {
+        background-color: var(--section-bg-light);
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 8px 15px var(--light-card-shadow);
+        border: 1px solid var(--section-border-light);
+        margin-bottom: 30px;
+        transition: all 0.3s ease;
+    }
+    .app.dark .about-section {
+        background-color: var(--section-bg-dark);
+        box-shadow: 0 8px 15px var(--dark-card-shadow);
+        border: 1px solid var(--section-border-dark);
+    }
+
+    .about-section h2 {
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 20px;
+        color: var(--section-heading-light);
+        border-bottom: 2px solid var(--primary-color);
+        padding-bottom: 10px;
+        display: inline-block; /* Para que la línea solo abarque el texto */
+    }
+    .app.dark .about-section h2 {
+        color: var(--section-heading-dark);
+        border-bottom-color: #b39cfb;
+    }
+
+    .about-section p {
+        font-size: 17px;
+        line-height: 1.8;
+        color: var(--section-text-light);
+        margin-bottom: 15px;
+    }
+    .app.dark .about-section p {
+        color: var(--section-text-dark);
+    }
+    .about-section p:last-child {
+        margin-bottom: 0;
+    }
+
+    .team-section {
+        text-align: center;
+        margin-top: 50px;
+        padding: 30px;
+        background-color: var(--section-bg-light);
+        border-radius: 15px;
+        box-shadow: 0 8px 15px var(--light-card-shadow);
+        border: 1px solid var(--section-border-light);
+    }
+    .app.dark .team-section {
+        background-color: var(--section-bg-dark);
+        box-shadow: 0 8px 15px var(--dark-card-shadow);
+        border: 1px solid var(--section-border-dark);
+    }
+
+    .team-section h2 {
+        font-size: 32px;
+        font-weight: 700;
+        margin-bottom: 30px;
+        color: var(--primary-color);
+        text-shadow: 0 2px 5px rgba(122, 90, 245, 0.2);
+    }
+    .app.dark .team-section h2 {
+        color: #b39cfb;
+        text-shadow: 0 2px 5px rgba(179, 156, 251, 0.1);
+    }
+
+    .team-members {
+        display: flex;
+        flex-wrap: wrap; /* Para que los nombres se ajusten en varias líneas si es necesario */
+        justify-content: center;
+        gap: 30px;
+    }
+
+    .member-name {
+        font-size: 22px;
+        font-weight: 600;
+        color: var(--section-text-light);
+        padding: 10px 20px;
+        border-radius: 25px;
+        background-color: rgba(122, 90, 245, 0.1); /* Fondo sutil para cada nombre */
+        backdrop-filter: blur(2px); /* Efecto blur para un toque moderno */
+        opacity: 0; /* Inicialmente oculto */
+        transform: translateY(20px); /* Inicialmente desplazado hacia abajo */
+        animation: fadeInSlideUp 0.8s ease-out forwards; /* Animación de aparición */
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
+    }
+    .app.dark .member-name {
+        color: var(--section-text-dark);
+        background-color: rgba(179, 156, 251, 0.1);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+    .member-name:hover {
+        transform: translateY(-5px) scale(1.05);
+        background-color: rgba(122, 90, 245, 0.2);
+        box-shadow: 0 5px 15px rgba(122, 90, 245, 0.15);
+    }
+    .app.dark .member-name:hover {
+        background-color: rgba(179, 156, 251, 0.2);
+        box-shadow: 0 5px 15px rgba(179, 156, 251, 0.1);
+    }
+
+
+    /* Retraso para la animación de cada nombre */
+    .member-name:nth-child(1) { animation-delay: 0.2s; }
+    .member-name:nth-child(2) { animation-delay: 0.4s; }
+    .member-name:nth-child(3) { animation-delay: 0.6s; }
+    .member-name:nth-child(4) { animation-delay: 0.8s; }
+    .member-name:nth-child(5) { animation-delay: 1.0s; }
+
+
+    @keyframes fadeInSlideUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+  </style>
+</head>
+<body>
+  <div id="app" class="app light">
+    <div class="container">
+      <div id="sidebar" class="sidebar">
+        <!-- Sección de Inicio -->
+        <a href="Edutreble4.html" class="sidebar-section">
+            <strong><i data-feather="home" class="icon"></i> Inicio</strong>
+        </a>
+        <!-- Sección de Cursos -->
+        <a href="Edutreble-Cursos.html" class="sidebar-section">
+            <strong><i data-feather="book-open" class="icon"></i> Cursos</strong>
+        </a>
+        <!-- Sección de Comunidad -->
+        <a href="Edutreble-Comunidad.html" class="sidebar-section">
+            <strong><i data-feather="users" class="icon"></i> Comunidad</strong>
+        </a>
+        <!-- Sección de Sobre Nosotros (Activa) -->
+        <a href="#" class="sidebar-section" style="color: var(--primary-hover);">
+            <strong><i data-feather="help-circle" class="icon" style="color: var(--primary-hover);"></i> Sobre nosotros</strong>
+        </a>
+      </div>
+      <div class="content">
+        <button class="menu-toggle" onclick="toggleSidebar()">
+            <i data-feather="menu"></i>
+        </button>
+        <div class="title">Sobre Edutreble</div>
+
+        <div class="about-content">
+          <div class="about-section">
+            <h2>Nuestra Visión</h2>
+            <p>Nuestro proyecto nace de una combinación de pasiones, ideas y el deseo de crear algo diferente. Lo que empezó como un reto entre distintas formas de pensar se transformó en una meta común: desarrollar una plataforma digital que realmente aporte al aprendizaje.</p>
+            <p>Así, con esfuerzo y creatividad, se dio forma a una herramienta didáctica que busca hacer de la enseñanza un proceso más dinámico, accesible y agradable, especialmente en el fascinante mundo de la música.</p>
+          </div>
+
+          <div class="about-section">
+            <h2>El Camino Recorrido</h2>
+            <p>A lo largo del camino, el equipo enfrentó desafíos, especialmente el tiempo, pero la colaboración y el aprovechamiento de los recursos tecnológicos permitieron avanzar con determinación. Cada integrante aportó sus habilidades y conocimientos, lo que hizo posible convertir una idea en una realidad tangible.</p>
+            <p>Aunque el proyecto aún está en desarrollo, representa un logro significativo y una experiencia que el grupo valora profundamente. Su propósito es seguir mejorándolo y llevarlo más allá, guiados siempre por la motivación que dio origen a esta iniciativa.</p>
+          </div>
+
+          <div class="team-section">
+            <h2>Nuestro Equipo</h2>
+            <div class="team-members">
+              <span class="member-name">Crhistian Buitron</span>
+              <span class="member-name">Ferney Jimenez</span>
+              <span class="member-name">Saymon Yance</span>
+              <span class="member-name">Luis Adrian</span>
+              <span class="member-name">Diego Buitron</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+ <script>
+  const app = document.getElementById('app');
+  const sidebar = document.getElementById('sidebar');
+  const menuToggle = document.querySelector('.menu-toggle');
+
+  // Inicializar Feather Icons
+  feather.replace();
+
+  // Verificar si existe un tema guardado en localStorage
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme) {
+    app.className = `app ${savedTheme}`;
+  }
+
+  function toggleSidebar() {
+    sidebar.classList.toggle('hidden');
+    // Cambiar el icono del menú al abrir/cerrar la sidebar
+    if (sidebar.classList.contains('hidden')) {
+        menuToggle.innerHTML = '<i data-feather="menu"></i>';
+    } else {
+        menuToggle.innerHTML = '<i data-feather="x"></i>';
+    }
+    feather.replace();
+  }
+
+  // Asegurar que el contenido se ajuste si la sidebar se cierra en pantallas grandes
+  window.addEventListener('resize', () => {
+      if (window.innerWidth > 768 && sidebar.classList.contains('hidden')) {
+          sidebar.classList.remove('hidden');
+          menuToggle.innerHTML = '<i data-feather="x"></i>';
+          feather.replace();
+      }
+  });
+
+  // Ocultar la sidebar por defecto en pantallas pequeñas para una mejor experiencia móvil
+  if (window.innerWidth < 768) {
+      sidebar.classList.add('hidden');
+      menuToggle.innerHTML = '<i data-feather="menu"></i>';
+      feather.replace();
+  }
+</script>
+</body>
+</html>

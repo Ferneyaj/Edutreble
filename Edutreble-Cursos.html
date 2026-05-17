@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cursos - Edutreble</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <!-- Agregando Feather Icons para los botones de menú y posible logo -->
+  <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+  <style>
+    :root {
+      /* Colores base para el modo claro */
+      --light-bg-start: #e0f2f7;
+      --light-bg-end: #d1eff7;
+      --light-text-color: #1e1e1e;
+      --light-sidebar-bg: rgba(255, 255, 255, 0.9);
+      --light-sidebar-border: rgba(0, 0, 0, 0.1);
+      --light-card-shadow: rgba(0, 0, 0, 0.08);
+
+      /* Colores base para el modo oscuro */
+      --dark-bg-start: #2c3e50;
+      --dark-bg-end: #34495e;
+      --dark-text-color: #fdfdfd;
+      --dark-sidebar-bg: rgba(44, 44, 44, 0.9);
+      --dark-sidebar-border: rgba(255, 255, 255, 0.1);
+      --dark-card-shadow: rgba(0, 0, 0, 0.3);
+
+      /* Colores de acento */
+      --primary-color: #7a5af5;
+      --primary-hover: #5b3bd6;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      transition: background 0.3s, color 0.3s;
+    }
+    .app.light {
+      background: linear-gradient(135deg, var(--light-bg-start), var(--light-bg-end));
+      color: var(--light-text-color);
+    }
+    .app.dark {
+      background: linear-gradient(135deg, var(--dark-bg-start), var(--dark-bg-end));
+      color: var(--dark-text-color);
+    }
+
+    .container {
+      display: flex;
+      height: 100vh;
+      width: 100%;
+    }
+
+    .sidebar {
+      width: 250px;
+      background-color: var(--light-sidebar-bg);
+      padding: 60px 20px 20px 20px;
+      position: fixed;
+      height: 100%;
+      top: 0;
+      left: 0;
+      transform: translateX(0);
+      transition: transform 0.3s ease-in-out, background-color 0.3s;
+      box-shadow: 2px 0 10px var(--light-card-shadow);
+      backdrop-filter: blur(5px);
+      border-right: 1px solid var(--light-sidebar-border);
+      display: flex; /* Para organizar los elementos de la sidebar */
+      flex-direction: column;
+    }
+    .app.dark .sidebar {
+      background-color: var(--dark-sidebar-bg);
+      box-shadow: 2px 0 10px var(--dark-card-shadow);
+      border-right: 1px solid var(--dark-sidebar-border);
+    }
+    .sidebar.hidden {
+      transform: translateX(-100%);
+    }
+
+    .menu-toggle {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      font-size: 28px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: inherit;
+      z-index: 100;
+      padding: 5px;
+      border-radius: 5px;
+      transition: color 0.3s, background-color 0.3s;
+    }
+    .menu-toggle:hover {
+        background-color: rgba(0,0,0,0.05);
+    }
+    .app.dark .menu-toggle:hover {
+        background-color: rgba(255,255,255,0.05);
+    }
+
+    .content {
+      flex-grow: 1;
+      padding: 40px;
+      overflow-y: auto;
+      margin-left: 0; /* Por defecto, sin margen */
+      transition: margin-left 0.3s ease-in-out;
+    }
+    .sidebar.hidden + .content {
+      margin-left: 0;
+    }
+    .sidebar:not(.hidden) + .content {
+      margin-left: 250px;
+    }
+
+
+    .title {
+      font-size: 40px; /* Título más grande */
+      font-weight: 700;
+      margin-bottom: 40px; /* Más espacio */
+      text-align: center;
+      letter-spacing: 1.5px;
+      color: var(--primary-color);
+      text-shadow: 0 3px 8px rgba(122, 90, 245, 0.2);
+    }
+    .app.dark .title {
+        color: #b39cfb;
+        text-shadow: 0 3px 8px rgba(179, 156, 251, 0.15);
+    }
+
+
+    .courses {
+      display: flex;
+      flex-direction: column;
+      gap: 25px; /* Más espacio entre tarjetas */
+      max-width: 700px; /* Ancho máximo un poco mayor */
+      margin: 0 auto;
+      padding-top: 20px; /* Espacio superior para el contenido */
+    }
+
+    .course {
+      padding: 25px 30px; /* Más padding */
+      border-radius: 15px; /* Bordes más redondeados */
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 8px 15px var(--light-card-shadow); /* Sombra más suave y pronunciada */
+      transition: all 0.3s ease; /* Transiciones suaves para hover y tema */
+      border: 1px solid rgba(0,0,0,0.05); /* Borde sutil */
+    }
+    .app.dark .course {
+        box-shadow: 0 8px 15px var(--dark-card-shadow);
+        border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .course:not(.locked):hover {
+      transform: translateY(-8px); /* Efecto "lift" al hacer hover */
+      box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+      cursor: pointer;
+    }
+    .app.dark .course:not(.locked):hover {
+        box-shadow: 0 12px 25px rgba(0,0,0,0.4);
+    }
+
+    .course.locked {
+      opacity: 0.6; /* Ligeramente más visible */
+      pointer-events: none;
+      filter: grayscale(30%); /* Efecto de blanco y negro sutil */
+    }
+
+    .course .label {
+      font-size: 20px; /* Texto más grande */
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px; /* Espacio entre icono y texto */
+    }
+
+    .course .progress {
+      font-size: 17px;
+      font-weight: 600;
+      color: rgba(0,0,0,0.7);
+    }
+    .app.dark .course .progress {
+        color: rgba(255,255,255,0.7);
+    }
+
+    /* Colores de las tarjetas con degradados suaves */
+    .green {
+      background: linear-gradient(45deg, #e6ffed, #d4edda);
+    }
+    .yellow {
+      background: linear-gradient(45deg, #fff7e6, #fff3cd);
+    }
+    .red {
+      background: linear-gradient(45deg, #ffe6e6, #f8d7da);
+    }
+
+    /* Colores de las tarjetas en modo oscuro */
+    .app.dark .green {
+      background: linear-gradient(45deg, #3a5e44, #2c4a32);
+      color: #cceccc;
+    }
+    .app.dark .yellow {
+      background: linear-gradient(45deg, #6b5c3e, #5a4b2c);
+      color: #fff0bd;
+    }
+    .app.dark .red {
+      background: linear-gradient(45deg, #6c3f3f, #5b2f2f);
+      color: #f8cccc;
+    }
+
+    /* Estilos para los elementos de la sidebar */
+    .sidebar-section {
+        color: inherit; /* Hereda el color del tema */
+        text-decoration: none;
+        display: block;
+        padding: 12px 0; /* Padding para cada sección */
+        margin-bottom: 10px;
+        font-size: 17px;
+        font-weight: 600;
+        transition: color 0.2s, transform 0.2s;
+        border-radius: 8px; /* Bordes suaves para el hover */
+    }
+    .sidebar-section:hover {
+        color: var(--primary-hover);
+        transform: translateX(5px); /* Pequeño desplazamiento al hacer hover */
+    }
+    .sidebar-section strong {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: inherit; /* Asegura que el color se herede del link */
+    }
+
+    /* Estilo para los iconos dentro de la sidebar y las etiquetas de cursos */
+    .icon {
+        width: 22px; /* Tamaño unificado para iconos */
+        height: 22px;
+        stroke-width: 2.5;
+        color: var(--primary-color); /* Color de acento para los iconos */
+        transition: color 0.2s;
+    }
+    .app.dark .icon {
+        color: #b39cfb;
+    }
+    /* Para los iconos dentro de un hover, cambiar color */
+    .sidebar-section:hover .icon {
+        color: var(--primary-hover);
+    }
+    .course .label .icon {
+        color: inherit; /* Los iconos de las tarjetas heredan el color del texto para que cambien con el modo oscuro */
+    }
+
+  </style>
+</head>
+<body>
+  <div id="app" class="app light">
+    <div class="container">
+      <div id="sidebar" class="sidebar">
+        <!-- Sección de Inicio -->
+        <a href="Edutreble4.html" class="sidebar-section">
+            <strong><i data-feather="home" class="icon"></i> Inicio</strong>
+        </a>
+        <!-- Sección de Cursos (Activa) -->
+        <a href="#" class="sidebar-section" style="color: var(--primary-hover);">
+            <strong><i data-feather="book-open" class="icon" style="color: var(--primary-hover);"></i> Cursos</strong>
+        </a>
+        <!-- Nueva Sección de Comunidad -->
+        <a href="Edutreble-Comunidad.html" class="sidebar-section">
+            <strong><i data-feather="users" class="icon"></i> Comunidad</strong>
+        </a>
+        <!-- Nueva Sección de Sobre Nosotros -->
+        <a href="Edutreble-SobreNosotros.html" class="sidebar-section">
+            <strong><i data-feather="help-circle" class="icon"></i> Sobre nosotros</strong>
+        </a>
+      </div>
+      <div class="content">
+        <button class="menu-toggle" onclick="toggleSidebar()">
+            <i data-feather="menu"></i>
+        </button>
+        <div class="title">Niveles del Curso</div>
+        <div class="courses">
+         <a href="Edutreble-CursoPrincipiante.html" class="course green">
+            <div class="label"><i data-feather="check-circle" class="icon"></i> Principiante</div>
+            <div class="progress">Progreso: 100%</div>
+          </a>
+          <div class="course yellow">
+            <div class="label"><i data-feather="activity" class="icon"></i> Intermedio</div>
+            <div class="progress">Progreso: 45%</div>
+          </div>
+          <div class="course red locked">
+            <div class="label"><i data-feather="lock" class="icon"></i> Avanzado</div>
+            <div class="progress">Bloqueado</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+ <script>
+  const app = document.getElementById('app');
+  const sidebar = document.getElementById('sidebar');
+  const menuToggle = document.querySelector('.menu-toggle');
+
+  // Inicializar Feather Icons
+  feather.replace();
+
+  // Verificar si existe un tema guardado en localStorage
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme) {
+    app.className = `app ${savedTheme}`;
+  }
+
+  function toggleSidebar() {
+    sidebar.classList.toggle('hidden');
+    // Cambiar el icono del menú al abrir/cerrar la sidebar
+    if (sidebar.classList.contains('hidden')) {
+        menuToggle.innerHTML = '<i data-feather="menu"></i>';
+    } else {
+        menuToggle.innerHTML = '<i data-feather="x"></i>';
+    }
+    feather.replace();
+  }
+
+  // Asegurar que el contenido se ajuste si la sidebar se cierra en pantallas grandes
+  window.addEventListener('resize', () => {
+      if (window.innerWidth > 768 && sidebar.classList.contains('hidden')) {
+          sidebar.classList.remove('hidden');
+          menuToggle.innerHTML = '<i data-feather="x"></i>';
+          feather.replace();
+      }
+  });
+
+  // Ocultar la sidebar por defecto en pantallas pequeñas para una mejor experiencia móvil
+  if (window.innerWidth < 768) {
+      sidebar.classList.add('hidden');
+      menuToggle.innerHTML = '<i data-feather="menu"></i>';
+      feather.replace();
+  }
+</script>
+</body>
+</html>

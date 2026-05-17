@@ -1,0 +1,466 @@
+<!-- Edutreble-Comunidad.html -->
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Comunidad - Edutreble</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+  <style>
+    :root {
+      /* Colores base para el modo claro */
+      --light-bg-start: #e0f2f7;
+      --light-bg-end: #d1eff7;
+      --light-text-color: #1e1e1e;
+      --light-sidebar-bg: rgba(255, 255, 255, 0.9);
+      --light-sidebar-border: rgba(0, 0, 0, 0.1);
+      --light-card-shadow: rgba(0, 0, 0, 0.08);
+
+      /* Colores base para el modo oscuro */
+      --dark-bg-start: #2c3e50;
+      --dark-bg-end: #34495e;
+      --dark-text-color: #fdfdfd;
+      --dark-sidebar-bg: rgba(44, 44, 44, 0.9);
+      --dark-sidebar-border: rgba(255, 255, 255, 0.1);
+      --dark-card-shadow: rgba(0, 0, 0, 0.3);
+
+      /* Colores de acento */
+      --primary-color: #7a5af5;
+      --primary-hover: #5b3bd6;
+
+      /* Colores para posts */
+      --post-bg-light: #ffffff;
+      --post-border-light: rgba(0, 0, 0, 0.08);
+      --post-bg-dark: #3a3a3a;
+      --post-border-dark: rgba(255, 255, 255, 0.1);
+      --post-text-light: #333333;
+      --post-text-dark: #e0e0e0;
+      --post-meta-light: #777777;
+      --post-meta-dark: #aaaaaa;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      transition: background 0.3s, color 0.3s;
+    }
+    .app.light {
+      background: linear-gradient(135deg, var(--light-bg-start), var(--light-bg-end));
+      color: var(--light-text-color);
+    }
+    .app.dark {
+      background: linear-gradient(135deg, var(--dark-bg-start), var(--dark-bg-end));
+      color: var(--dark-text-color);
+    }
+
+    .container {
+      display: flex;
+      height: 100vh;
+      width: 100%;
+    }
+
+    .sidebar {
+      width: 250px;
+      background-color: var(--light-sidebar-bg);
+      padding: 60px 20px 20px 20px;
+      position: fixed;
+      height: 100%;
+      top: 0;
+      left: 0;
+      transform: translateX(0);
+      transition: transform 0.3s ease-in-out, background-color 0.3s;
+      box-shadow: 2px 0 10px var(--light-card-shadow);
+      backdrop-filter: blur(5px);
+      border-right: 1px solid var(--light-sidebar-border);
+      display: flex;
+      flex-direction: column;
+    }
+    .app.dark .sidebar {
+      background-color: var(--dark-sidebar-bg);
+      box-shadow: 2px 0 10px var(--dark-card-shadow);
+      border-right: 1px solid var(--dark-sidebar-border);
+    }
+    .sidebar.hidden {
+      transform: translateX(-100%);
+    }
+
+    .menu-toggle {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      font-size: 28px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: inherit;
+      z-index: 100;
+      padding: 5px;
+      border-radius: 5px;
+      transition: color 0.3s, background-color 0.3s;
+    }
+    .menu-toggle:hover {
+        background-color: rgba(0,0,0,0.05);
+    }
+    .app.dark .menu-toggle:hover {
+        background-color: rgba(255,255,255,0.05);
+    }
+
+    .content {
+      flex-grow: 1;
+      padding: 40px;
+      overflow-y: auto;
+      margin-left: 0;
+      transition: margin-left 0.3s ease-in-out;
+    }
+    .sidebar.hidden + .content {
+      margin-left: 0;
+    }
+    .sidebar:not(.hidden) + .content {
+      margin-left: 250px;
+    }
+
+    .title {
+      font-size: 40px;
+      font-weight: 700;
+      margin-bottom: 40px;
+      text-align: center;
+      letter-spacing: 1.5px;
+      color: var(--primary-color);
+      text-shadow: 0 3px 8px rgba(122, 90, 245, 0.2);
+    }
+    .app.dark .title {
+        color: #b39cfb;
+        text-shadow: 0 3px 8px rgba(179, 156, 251, 0.15);
+    }
+
+    /* Estilos para los elementos de la sidebar */
+    .sidebar-section {
+        color: inherit;
+        text-decoration: none;
+        display: block;
+        padding: 12px 0;
+        margin-bottom: 10px;
+        font-size: 17px;
+        font-weight: 600;
+        transition: color 0.2s, transform 0.2s;
+        border-radius: 8px;
+    }
+    .sidebar-section:hover {
+        color: var(--primary-hover);
+        transform: translateX(5px);
+    }
+    .sidebar-section strong {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: inherit;
+    }
+
+    /* Estilo para los iconos dentro de la sidebar */
+    .icon {
+        width: 22px;
+        height: 22px;
+        stroke-width: 2.5;
+        color: var(--primary-color);
+        transition: color 0.2s;
+    }
+    .app.dark .icon {
+        color: #b39cfb;
+    }
+    .sidebar-section:hover .icon {
+        color: var(--primary-hover);
+    }
+
+    /* --- Estilos específicos de la página de Comunidad --- */
+    .community-feed {
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+        max-width: 800px; /* Ancho máximo para el feed */
+        margin: 0 auto;
+        padding-top: 20px;
+    }
+
+    .post {
+        background-color: var(--post-bg-light);
+        padding: 25px;
+        border-radius: 15px;
+        box-shadow: 0 8px 15px var(--light-card-shadow);
+        border: 1px solid var(--post-border-light);
+        transition: all 0.3s ease;
+    }
+    .app.dark .post {
+        background-color: var(--post-bg-dark);
+        box-shadow: 0 8px 15px var(--dark-card-shadow);
+        border: 1px solid var(--post-border-dark);
+    }
+
+    .post-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+
+    .avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        margin-right: 15px;
+        background-color: var(--primary-color); /* Color de fondo para avatares */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        color: white;
+        font-size: 20px;
+        text-transform: uppercase;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .app.dark .avatar {
+        background-color: #b39cfb;
+    }
+
+    .user-info .username {
+        font-weight: 700;
+        font-size: 18px;
+        color: var(--post-text-light);
+    }
+    .app.dark .user-info .username {
+        color: var(--post-text-dark);
+    }
+
+    .user-info .timestamp {
+        font-size: 13px;
+        color: var(--post-meta-light);
+    }
+    .app.dark .user-info .timestamp {
+        color: var(--post-meta-dark);
+    }
+
+    .post-content {
+        font-size: 16px;
+        line-height: 1.6;
+        color: var(--post-text-light);
+        margin-bottom: 15px;
+    }
+    .app.dark .post-content {
+        color: var(--post-text-dark);
+    }
+
+    .post-footer {
+        display: flex;
+        gap: 20px;
+        font-size: 14px;
+        color: var(--post-meta-light);
+    }
+    .app.dark .post-footer {
+        color: var(--post-meta-dark);
+    }
+
+    .post-footer span {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    .post-footer span .feather-icon { /* Usar una clase para los iconos de reacción */
+        width: 18px;
+        height: 18px;
+        stroke-width: 2;
+        cursor: pointer;
+        transition: color 0.2s;
+    }
+    .post-footer span .feather-icon:hover {
+        color: var(--primary-color);
+    }
+
+  </style>
+</head>
+<body>
+  <div id="app" class="app light">
+    <div class="container">
+      <div id="sidebar" class="sidebar">
+        <!-- Sección de Inicio -->
+        <a href="Edutreble4.html" class="sidebar-section">
+            <strong><i data-feather="home" class="icon"></i> Inicio</strong>
+        </a>
+        <!-- Sección de Cursos -->
+        <a href="Edutreble-Cursos.html" class="sidebar-section">
+            <strong><i data-feather="book-open" class="icon"></i> Cursos</strong>
+        </a>
+        <!-- Sección de Comunidad (Activa) -->
+        <a href="#" class="sidebar-section" style="color: var(--primary-hover);">
+            <strong><i data-feather="users" class="icon" style="color: var(--primary-hover);"></i> Comunidad</strong>
+        </a>
+        <!-- Sección de Sobre Nosotros -->
+        <a href="Edutreble-SobreNosotros.html" class="sidebar-section">
+            <strong><i data-feather="help-circle" class="icon"></i> Sobre nosotros</strong>
+        </a>
+      </div>
+      <div class="content">
+        <button class="menu-toggle" onclick="toggleSidebar()">
+            <i data-feather="menu"></i>
+        </button>
+        <div class="title">Comunidad Edutreble</div>
+
+        <div class="community-feed">
+
+          <!-- Post 1: Teoría Musical -->
+          <div class="post">
+            <div class="post-header">
+              <div class="avatar" style="background-color: #f06;">M</div>
+              <div class="user-info">
+                <div class="username">Marta G.</div>
+                <div class="timestamp">Hace 2 horas</div>
+              </div>
+            </div>
+            <div class="post-content">
+              ¡Hola a todos! Estaba repasando las escalas menores armónicas. ¿Alguien tiene algún truco para recordar fácilmente la alteración de la sensible? Siempre me lío con eso. 🤔
+            </div>
+            <div class="post-footer">
+              <span><i data-feather="heart" class="feather-icon"></i> 12</span>
+              <span><i data-feather="message-circle" class="feather-icon"></i> 4</span>
+            </div>
+          </div>
+
+          <!-- Post 2: Apoyo a la página -->
+          <div class="post">
+            <div class="post-header">
+              <div class="avatar" style="background-color: #0c9;">J</div>
+              <div class="user-info">
+                <div class="username">Juan P.</div>
+                <div class="timestamp">Ayer</div>
+              </div>
+            </div>
+            <div class="post-content">
+              Quiero felicitar al equipo de Edutreble por esta app tan intuitiva. ¡Estoy aprendiendo muchísimo! El modo oscuro es una maravilla para estudiar por la noche. ¡Gracias! ✨
+            </div>
+            <div class="post-footer">
+              <span><i data-feather="heart" class="feather-icon"></i> 35</span>
+              <span><i data-feather="message-circle" class="feather-icon"></i> 7</span>
+            </div>
+          </div>
+
+          <!-- Post 3: Teoría Musical -->
+          <div class="post">
+            <div class="post-header">
+              <div class="avatar" style="background-color: #ffa500;">A</div>
+              <div class="user-info">
+                <div class="username">Andrea R.</div>
+                <div class="timestamp">Hace 3 días</div>
+              </div>
+            </div>
+            <div class="post-content">
+              ¿Cuál es vuestro modo musical favorito y por qué? El mío es el modo Lidio, tiene una sonoridad tan brillante y optimista. ¡Me encanta para componer! 🎶
+            </div>
+            <div class="post-footer">
+              <span><i data-feather="heart" class="feather-icon"></i> 20</span>
+              <span><i data-feather="message-circle" class="feather-icon"></i> 10</span>
+            </div>
+          </div>
+
+          <!-- Post 4: Apoyo a la página -->
+          <div class="post">
+            <div class="post-header">
+              <div class="avatar" style="background-color: #6a5acd;">C</div>
+              <div class="user-info">
+                <div class="username">Carlos V.</div>
+                <div class="timestamp">La semana pasada</div>
+              </div>
+            </div>
+            <div class="post-content">
+              Edutreble ha hecho que entender el solfeo sea mucho más ameno. ¡Los ejercicios interactivos son geniales! Recomiendo a todos los que empiezan. 👍
+            </div>
+            <div class="post-footer">
+              <span><i data-feather="heart" class="feather-icon"></i> 48</span>
+              <span><i data-feather="message-circle" class="feather-icon"></i> 15</span>
+            </div>
+          </div>
+
+          <!-- Post 5: Humor de la comunidad (¡Este es el nuevo post!) -->
+          <div class="post">
+            <div class="post-header">
+              <div class="avatar" style="background-color: #a0a0a0;">J</div>
+              <div class="user-info">
+                <div class="username">Juan J.</div>
+                <div class="timestamp">Justo ahora</div>
+              </div>
+            </div>
+            <div class="post-content">
+              En el McDonals no venden donas. 😢, pero que app la Monda.
+            </div>
+            <div class="post-footer">
+              <span><i data-feather="heart" class="feather-icon"></i> 0</span>
+              <span><i data-feather="message-circle" class="feather-icon"></i> 0</span>
+            </div>
+          </div>
+
+   <!-- Post 5: Humor de la comunidad (¡Este es el nuevo post!) -->
+          <div class="post">
+            <div class="post-header">
+              <div class="avatar" style="background-color: #FFFF00;">P</div>
+              <div class="user-info">
+                <div class="username">Petrosky.</div>
+                <div class="timestamp">Mañana a las 7pm</div>
+              </div>
+            </div>
+            <div class="post-content">
+              El gobierno necesita mas aplicaciones como esta, yo mismo la impulsare.
+            </div>
+            <div class="post-footer">
+              <span><i data-feather="heart" class="feather-icon"></i> 67</span>
+              <span><i data-feather="message-circle" class="feather-icon"></i> 89</span>
+            </div>
+          </div>
+          
+        </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  const app = document.getElementById('app');
+  const sidebar = document.getElementById('sidebar');
+  const menuToggle = document.querySelector('.menu-toggle');
+
+  // Inicializar Feather Icons
+  feather.replace();
+
+  // Verificar si existe un tema guardado en localStorage
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme) {
+    app.className = `app ${savedTheme}`;
+  }
+
+  function toggleSidebar() {
+    sidebar.classList.toggle('hidden');
+    // Cambiar el icono del menú al abrir/cerrar la sidebar
+    if (sidebar.classList.contains('hidden')) {
+        menuToggle.innerHTML = '<i data-feather="menu"></i>';
+    } else {
+        menuToggle.innerHTML = '<i data-feather="x"></i>';
+    }
+    feather.replace();
+  }
+
+  // Asegurar que el contenido se ajuste si la sidebar se cierra en pantallas grandes
+  window.addEventListener('resize', () => {
+      if (window.innerWidth > 768 && sidebar.classList.contains('hidden')) {
+          sidebar.classList.remove('hidden');
+          menuToggle.innerHTML = '<i data-feather="x"></i>';
+          feather.replace();
+      }
+  });
+
+  // Ocultar la sidebar por defecto en pantallas pequeñas para una mejor experiencia móvil
+  if (window.innerWidth < 768) {
+      sidebar.classList.add('hidden');
+      menuToggle.innerHTML = '<i data-feather="menu"></i>';
+      feather.replace();
+  }
+</script>
+</body>
+</html>

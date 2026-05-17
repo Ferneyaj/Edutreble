@@ -1,0 +1,411 @@
+<!-- Edutreble-CursoPrincipiante.html -->
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Curso Principiante - Edutreble</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+  <style>
+    :root {
+      /* Colores base para el modo claro */
+      --light-bg-start: #e0f2f7;
+      --light-bg-end: #d1eff7;
+      --light-text-color: #1e1e1e;
+      --light-sidebar-bg: rgba(255, 255, 255, 0.9);
+      --light-sidebar-border: rgba(0, 0, 0, 0.1);
+      --light-card-shadow: rgba(0, 0, 0, 0.08);
+
+      /* Colores base para el modo oscuro */
+      --dark-bg-start: #2c3e50;
+      --dark-bg-end: #34495e;
+      --dark-text-color: #fdfdfd;
+      --dark-sidebar-bg: rgba(44, 44, 44, 0.9);
+      --dark-sidebar-border: rgba(255, 255, 255, 0.1);
+      --dark-card-shadow: rgba(0, 0, 0, 0.3);
+
+      /* Colores de acento */
+      --primary-color: #7a5af5;
+      --primary-hover: #5b3bd6;
+      --accent-completed: #8e71ff; /* Un morado ligeramente distinto para completado */
+      --locked-color-light: #cccccc; /* Gris para elementos bloqueados en modo claro */
+      --locked-color-dark: #666666; /* Gris para elementos bloqueados en modo oscuro */
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      transition: background 0.3s, color 0.3s;
+    }
+    .app.light {
+      background: linear-gradient(135deg, var(--light-bg-start), var(--light-bg-end));
+      color: var(--light-text-color);
+    }
+    .app.dark {
+      background: linear-gradient(135deg, var(--dark-bg-start), var(--dark-bg-end));
+      color: var(--dark-text-color);
+    }
+
+    .container {
+      display: flex;
+      height: 100vh;
+      width: 100%;
+    }
+
+    .sidebar {
+      width: 250px;
+      background-color: var(--light-sidebar-bg);
+      padding: 60px 20px 20px 20px;
+      position: fixed;
+      height: 100%;
+      top: 0;
+      left: 0;
+      transform: translateX(0);
+      transition: transform 0.3s ease-in-out, background-color 0.3s;
+      box-shadow: 2px 0 10px var(--light-card-shadow);
+      backdrop-filter: blur(5px);
+      border-right: 1px solid var(--light-sidebar-border);
+      display: flex;
+      flex-direction: column;
+    }
+    .app.dark .sidebar {
+      background-color: var(--dark-sidebar-bg);
+      box-shadow: 2px 0 10px var(--dark-card-shadow);
+      border-right: 1px solid var(--dark-sidebar-border);
+    }
+    .sidebar.hidden {
+      transform: translateX(-100%);
+    }
+
+    .menu-toggle {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      font-size: 28px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: inherit;
+      z-index: 100;
+      padding: 5px;
+      border-radius: 5px;
+      transition: color 0.3s, background-color 0.3s;
+    }
+    .menu-toggle:hover {
+        background-color: rgba(0,0,0,0.05);
+    }
+    .app.dark .menu-toggle:hover {
+        background-color: rgba(255,255,255,0.05);
+    }
+
+    .content {
+      flex-grow: 1;
+      padding: 40px;
+      overflow-y: auto;
+      margin-left: 0;
+      transition: margin-left 0.3s ease-in-out;
+      position: relative; /* Para posicionar elementos relativos al contenido */
+    }
+    .sidebar.hidden + .content {
+      margin-left: 0;
+    }
+    .sidebar:not(.hidden) + .content {
+      margin-left: 250px;
+    }
+
+    .title {
+      font-size: 40px;
+      font-weight: 700;
+      margin-bottom: 40px;
+      text-align: center;
+      letter-spacing: 1.5px;
+      color: var(--primary-color);
+      text-shadow: 0 3px 8px rgba(122, 90, 245, 0.2);
+    }
+    .app.dark .title {
+        color: #b39cfb;
+        text-shadow: 0 3px 8px rgba(179, 156, 251, 0.15);
+    }
+
+    /* Estilos para los elementos de la sidebar */
+    .sidebar-section {
+        color: inherit;
+        text-decoration: none;
+        display: block;
+        padding: 12px 0;
+        margin-bottom: 10px;
+        font-size: 17px;
+        font-weight: 600;
+        transition: color 0.2s, transform 0.2s;
+        border-radius: 8px;
+    }
+    .sidebar-section:hover {
+        color: var(--primary-hover);
+        transform: translateX(5px);
+    }
+    .sidebar-section strong {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: inherit;
+    }
+
+    /* Estilo para los iconos dentro de la sidebar */
+    .icon {
+        width: 22px;
+        height: 22px;
+        stroke-width: 2.5;
+        color: var(--primary-color);
+        transition: color 0.2s;
+    }
+    .app.dark .icon {
+        color: #b39cfb;
+    }
+    .sidebar-section:hover .icon {
+        color: var(--primary-hover);
+    }
+
+    /* --- Estilos específicos del Mapa de Curso --- */
+    .course-map {
+      position: relative;
+      width: 100%;
+      max-width: 900px;
+      height: 600px; /* Altura fija para el mapa */
+      margin: 0 auto;
+      display: flex;
+      justify-content: center;
+      align-items: center; /* Centrar el "mapa" en el espacio */
+      overflow: hidden; /* Ocultar lo que se sale del área del mapa */
+    }
+
+    .level-node {
+      position: absolute;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%; /* Nodos circulares */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      text-align: center;
+      cursor: pointer;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+      font-size: 14px;
+      line-height: 1.2;
+    }
+    .level-node span.level-text {
+        margin-top: 5px;
+        font-size: 13px;
+    }
+
+    /* Estados de los nodos */
+    .level-node.completed {
+      background-color: var(--accent-completed);
+      color: white;
+      box-shadow: 0 5px 20px rgba(142, 113, 255, 0.4);
+      animation: pulseGlow 1.5s infinite alternate; /* Efecto de brillo sutil */
+    }
+    .level-node.completed .feather-icon {
+        color: white;
+        stroke-width: 3;
+    }
+
+    .level-node.active {
+      background-color: var(--primary-color);
+      color: white;
+      box-shadow: 0 5px 20px rgba(122, 90, 245, 0.5);
+      border: 3px solid white; /* Borde para indicar que es el activo */
+      transform: scale(1.05);
+    }
+    .level-node.active .feather-icon {
+        color: white;
+        stroke-width: 3;
+    }
+
+    .level-node.locked {
+      background-color: var(--locked-color-light);
+      color: #666666;
+      cursor: not-allowed;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .app.dark .level-node.locked {
+      background-color: var(--locked-color-dark);
+      color: #bbbbbb;
+    }
+    .level-node.locked .feather-icon {
+        color: #888888;
+        stroke-width: 2;
+    }
+    .app.dark .level-node.locked .feather-icon {
+        color: #dddddd;
+    }
+
+
+    /* Efectos hover */
+    .level-node:not(.locked):hover {
+      transform: scale(1.1);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    }
+
+    /* Conexiones (Caminos) */
+    .path {
+      position: absolute;
+      background: none; /* No color de fondo para la línea */
+      border-top: 3px dashed; /* Línea entrecortada */
+      opacity: 0.6;
+      z-index: -1; /* Detrás de los nodos */
+      transition: all 0.5s ease;
+    }
+
+    .path.completed {
+      border-color: var(--accent-completed);
+    }
+    .path.locked {
+      border-color: var(--locked-color-light);
+    }
+    .app.dark .path.locked {
+      border-color: var(--locked-color-dark);
+    }
+
+
+    /* Posicionamiento de los nodos y caminos (ejemplo) */
+    #level1 { top: 10%; left: 15%; }
+    #path1-2 { top: 20%; left: 20%; width: 30%; transform: rotate(15deg); }
+    #level2 { top: 25%; left: 45%; }
+    #path2-3 { top: 35%; left: 40%; width: 25%; transform: rotate(-30deg); }
+    #level3 { top: 45%; left: 60%; }
+    #path2-4 { top: 40%; left: 35%; width: 10%; transform: rotate(80deg); } /* Camino alternativo/ramificado */
+    #level4 { top: 50%; left: 30%; }
+    #path4-5 { top: 60%; left: 35%; width: 20%; transform: rotate(10deg); }
+    #level5 { top: 65%; left: 55%; }
+
+    /* Animación de brillo para nodos completados */
+    @keyframes pulseGlow {
+      0% { box-shadow: 0 5px 20px rgba(142, 113, 255, 0.4); }
+      100% { box-shadow: 0 5px 25px rgba(142, 113, 255, 0.6); }
+    }
+  </style>
+</head>
+<body>
+  <div id="app" class="app light">
+    <div class="container">
+      <div id="sidebar" class="sidebar">
+        <!-- Sección de Inicio -->
+        <a href="Edutreble4.html" class="sidebar-section">
+            <strong><i data-feather="home" class="icon"></i> Inicio</strong>
+        </a>
+        <!-- Sección de Cursos (Activa) -->
+        <a href="Edutreble-Cursos.html" class="sidebar-section" style="color: var(--primary-hover);">
+            <strong><i data-feather="book-open" class="icon" style="color: var(--primary-hover);"></i> Cursos</strong>
+        </a>
+        <!-- Sección de Comunidad -->
+        <a href="Edutreble-Comunidad.html" class="sidebar-section">
+            <strong><i data-feather="users" class="icon"></i> Comunidad</strong>
+        </a>
+        <!-- Sección de Sobre Nosotros -->
+        <a href="Edutreble-SobreNosotros.html" class="sidebar-section">
+            <strong><i data-feather="help-circle" class="icon"></i> Sobre nosotros</strong>
+        </a>
+      </div>
+      <div class="content">
+        <button class="menu-toggle" onclick="toggleSidebar()">
+            <i data-feather="menu"></i>
+        </button>
+        <div class="title">Curso Principiante</div>
+
+        <div class="course-map">
+          <!-- Nivel 1: Completado -->
+          <a href="Cursos/Edutreble-Nivel1_Notas.html" id="level1" class="level-node completed">
+            <i data-feather="check" class="feather-icon"></i>
+            <span class="level-text">Nivel 1:<br>Las Notas</span>
+          </a>
+
+          <!-- Camino 1-2: Completado -->
+          <div id="path1-2" class="path completed"></div>
+
+          <!-- Nivel 2: Activo (Puedes hacer click para entrar) -->
+          <div id="level2" class="level-node active">
+            <i data-feather="square" class="feather-icon"></i>
+            <span class="level-text">Nivel 2:<br>El Pentagrama</span>
+          </div>
+
+          <!-- Camino 2-3: Bloqueado -->
+          <div id="path2-3" class="path locked"></div>
+
+          <!-- Nivel 3: Bloqueado -->
+          <div id="level3" class="level-node locked">
+            <i data-feather="lock" class="feather-icon"></i>
+            <span class="level-text">Nivel 3:<br>Claves Musicales</span>
+          </div>
+
+          <!-- Camino 2-4: Bloqueado (Ejemplo de ramificación) -->
+          <div id="path2-4" class="path locked"></div>
+
+          <!-- Nivel 4: Bloqueado -->
+          <div id="level4" class="level-node locked">
+            <i data-feather="lock" class="feather-icon"></i>
+            <span class="level-text">Nivel 4:<br>Ritmo y Compás</span>
+          </div>
+
+          <!-- Camino 4-5: Bloqueado -->
+          <div id="path4-5" class="path locked"></div>
+
+          <!-- Nivel 5: Bloqueado -->
+          <div id="level5" class="level-node locked">
+            <i data-feather="lock" class="feather-icon"></i>
+            <span class="level-text">Nivel 5:<br>Escalas Básicas</span>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+ <script>
+  const app = document.getElementById('app');
+  const sidebar = document.getElementById('sidebar');
+  const menuToggle = document.querySelector('.menu-toggle');
+
+  // Inicializar Feather Icons
+  feather.replace();
+
+  // Verificar si existe un tema guardado en localStorage
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme) {
+    app.className = `app ${savedTheme}`;
+  }
+
+  function toggleSidebar() {
+    sidebar.classList.toggle('hidden');
+    // Cambiar el icono del menú al abrir/cerrar la sidebar
+    if (sidebar.classList.contains('hidden')) {
+        menuToggle.innerHTML = '<i data-feather="menu"></i>';
+    } else {
+        menuToggle.innerHTML = '<i data-feather="x"></i>';
+    }
+    feather.replace();
+  }
+
+  // Asegurar que el contenido se ajuste si la sidebar se cierra en pantallas grandes
+  window.addEventListener('resize', () => {
+      if (window.innerWidth > 768 && sidebar.classList.contains('hidden')) {
+          sidebar.classList.remove('hidden');
+          menuToggle.innerHTML = '<i data-feather="x"></i>';
+          feather.replace();
+      }
+  });
+
+  // Ocultar la sidebar por defecto en pantallas pequeñas para una mejor experiencia móvil
+  if (window.innerWidth < 768) {
+      sidebar.classList.add('hidden');
+      menuToggle.innerHTML = '<i data-feather="menu"></i>';
+      feather.replace();
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,647 @@
+<!-- Edutreble-Nivel1_Notas.html (ACTUALIZADO - Versión 3) -->
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Nivel 1: Las Notas - Edutreble</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+  <style>
+    :root {
+      /* Colores base para el modo claro */
+      --light-bg-start: #e0f2f7;
+      --light-bg-end: #d1eff7;
+      --light-text-color: #1e1e1e;
+      --light-sidebar-bg: rgba(255, 255, 255, 0.9);
+      --light-sidebar-border: rgba(0, 0, 0, 0.1);
+      --light-card-shadow: rgba(0, 0, 0, 0.08);
+
+      /* Colores base para el modo oscuro */
+      --dark-bg-start: #2c3e50;
+      --dark-bg-end: #34495e;
+      --dark-text-color: #fdfdfd;
+      --dark-sidebar-bg: rgba(44, 44, 44, 0.9);
+      --dark-sidebar-border: rgba(255, 255, 255, 0.1);
+      --dark-card-shadow: rgba(0, 0, 0, 0.3);
+
+      /* Colores de acento */
+      --primary-color: #7a5af5;
+      --primary-hover: #5b3bd6;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      transition: background 0.3s, color 0.3s;
+    }
+    .app.light {
+      background: linear-gradient(135deg, var(--light-bg-start), var(--light-bg-end));
+      color: var(--light-text-color);
+    }
+    .app.dark {
+      background: linear-gradient(135deg, var(--dark-bg-start), var(--dark-bg-end));
+      color: var(--dark-text-color);
+    }
+
+    .container {
+      display: flex;
+      height: 100vh;
+      width: 100%;
+    }
+
+    .sidebar {
+      width: 250px;
+      background-color: var(--light-sidebar-bg);
+      padding: 60px 20px 20px 20px;
+      position: fixed;
+      height: 100%;
+      top: 0;
+      left: 0;
+      transform: translateX(0);
+      transition: transform 0.3s ease-in-out, background-color 0.3s;
+      box-shadow: 2px 0 10px var(--light-card-shadow);
+      backdrop-filter: blur(5px);
+      border-right: 1px solid var(--light-sidebar-border);
+      display: flex;
+      flex-direction: column;
+      z-index: 1000; /* Asegurarse de que esté siempre encima */
+    }
+    .app.dark .sidebar {
+      background-color: var(--dark-sidebar-bg);
+      box-shadow: 2px 0 10px var(--dark-card-shadow);
+      border-right: 1px solid var(--dark-sidebar-border);
+    }
+    .sidebar.hidden {
+      transform: translateX(-100%);
+    }
+
+    .menu-toggle {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      font-size: 28px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: inherit;
+      z-index: 100;
+      padding: 5px;
+      border-radius: 5px;
+      transition: color 0.3s, background-color 0.3s;
+    }
+    .menu-toggle:hover {
+        background-color: rgba(0,0,0,0.05);
+    }
+    .app.dark .menu-toggle:hover {
+        background-color: rgba(255,255,255,0.05);
+    }
+
+    .content {
+      flex-grow: 1;
+      padding: 40px;
+      overflow: hidden; /* Evita scroll no deseado al mover personajes */
+      margin-left: 0;
+      transition: margin-left 0.3s ease-in-out;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      height: 100%;
+    }
+    .sidebar.hidden + .content {
+      margin-left: 0;
+    }
+    .sidebar:not(.hidden) + .content {
+      margin-left: 250px;
+    }
+
+    .title {
+      font-size: 40px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      text-align: center;
+      letter-spacing: 1.5px;
+      color: var(--primary-color);
+      text-shadow: 0 3px 8px rgba(122, 90, 245, 0.2);
+    }
+    .app.dark .title {
+        color: #b39cfb;
+        text-shadow: 0 3px 8px rgba(179, 156, 251, 0.15);
+    }
+
+    /* Estilos para los elementos de la sidebar */
+    .sidebar-section {
+        color: inherit;
+        text-decoration: none;
+        display: block;
+        padding: 12px 0;
+        margin-bottom: 10px;
+        font-size: 17px;
+        font-weight: 600;
+        transition: color 0.2s, transform 0.2s;
+        border-radius: 8px;
+    }
+    .sidebar-section:hover {
+        color: var(--primary-hover);
+        transform: translateX(5px);
+    }
+    .sidebar-section strong {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: inherit;
+    }
+
+    /* Estilo para los iconos dentro de la sidebar */
+    .icon {
+        width: 22px;
+        height: 22px;
+        stroke-width: 2.5;
+        color: var(--primary-color);
+        transition: color 0.2s;
+    }
+    .app.dark .icon {
+        color: #b39cfb;
+    }
+    .sidebar-section:hover .icon {
+        color: var(--primary-hover);
+    }
+
+    /* --- Estilos específicos de la Lección de Notas --- */
+    .lesson-area {
+        position: relative;
+        width: 100%;
+        height: calc(100vh - 120px); /* Ajustar altura para dejar espacio al título y botones superiores */
+        max-width: 1200px; /* Aumentar el ancho máximo del área de la lección */
+        margin-top: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden; /* Asegurarse de que el contenido no se desborde */
+    }
+
+    /* --- Fondo dinámico con notas musicales --- */
+    .background-notes {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        pointer-events: none; /* Para que no interfieran con clics */
+    }
+    .background-note {
+        position: absolute;
+        font-size: 60px; /* Tamaño de las notas */
+        opacity: 0.1; /* Baja opacidad */
+        color: var(--primary-color); /* Color de acento */
+        user-select: none;
+        animation: floatAndFade 15s infinite ease-in-out alternate;
+    }
+    .app.dark .background-note {
+        color: #b39cfb; /* Color de acento para el modo oscuro */
+    }
+
+    /* Animación para las notas de fondo */
+  @keyframes floatAndFade {
+        0% { transform: translateY(0px) scale(1); opacity: 0.1; }
+        50% { transform: translateY(-40px) scale(1.08); opacity: 0.18; } /* Aumentado el desplazamiento Y y la escala/opacidad */
+        100% { transform: translateY(0px) scale(1); opacity: 0.1; }
+    }
+
+    .background-note {
+        position: absolute;
+        font-size: 60px; /* Tamaño de las notas */
+        opacity: 0.1; /* Baja opacidad */
+        color: var(--primary-color); /* Color de acento */
+        user-select: none;
+        animation: floatAndFade 15s infinite ease-in-out alternate;
+        /* Añadiremos una pequeña rotación para más dinamismo */
+        animation-name: floatAndFade;
+        animation-timing-function: ease-in-out;
+        animation-iteration-count: infinite;
+        animation-direction: alternate;
+        /* La duración se establecerá en JS para más variedad */
+    }
+
+
+    .beethoven-char {
+        width: 250px; /* Tamaño de la caricatura - AUMENTADO */
+        height: auto;
+        position: absolute;
+        z-index: 100; /* Asegurarse de que esté sobre otros elementos */
+        transition: all 1s cubic-bezier(0.68, -0.55, 0.27, 1.55); /* Transición más "rebotante" */
+        transform-origin: bottom center; /* Para animaciones futuras si se desea */
+    }
+
+    .speech-bubble {
+        background-color: var(--light-sidebar-bg); /* Fondo del globo */
+        border: 1px solid var(--light-sidebar-border);
+        border-radius: 20px;
+        padding: 25px 35px;
+        position: absolute; /* Posicionamiento absoluto */
+        max-width: 500px; /* Ancho máximo para el globo */
+        box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+        text-align: left;
+        font-size: 18px;
+        line-height: 1.7;
+        color: var(--light-text-color);
+        z-index: 99; /* Ligeramente debajo de Beethoven */
+        transition: all 1s cubic-bezier(0.68, -0.55, 0.27, 1.55); /* Transición más "rebotante" */
+        opacity: 0; /* Inicialmente oculto */
+        visibility: hidden;
+        pointer-events: none; /* Para no bloquear clics en la lección */
+    }
+    .app.dark .speech-bubble {
+        background-color: var(--dark-sidebar-bg);
+        border: 1px solid var(--dark-sidebar-border);
+        box-shadow: 0 8px 15px rgba(0,0,0,0.3);
+        color: var(--dark-text-color);
+    }
+    .speech-bubble.active {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto; /* Activar clics solo cuando está activo */
+    }
+
+    .speech-bubble::before { /* Punta del globo */
+        content: '';
+        width: 0;
+        height: 0;
+        border-left: 20px solid transparent;
+        border-right: 20px solid transparent;
+        border-top: 20px solid var(--light-sidebar-bg);
+        position: absolute;
+        bottom: -19px;
+        left: 50%;
+        transform: translateX(-50%) rotate(180deg);
+        filter: drop-shadow(0 -2px 1px rgba(0,0,0,0.05));
+    }
+    .app.dark .speech-bubble::before {
+        border-top-color: var(--dark-sidebar-bg);
+        filter: drop-shadow(0 -2px 1px rgba(255,255,255,0.05));
+    }
+
+
+    .note-explanation {
+        margin-top: 10px;
+        margin-bottom: 10px;
+        font-size: 20px;
+        font-weight: 600;
+        color: var(--primary-color);
+        display: block;
+    }
+    .app.dark .note-explanation {
+        color: #b39cfb;
+    }
+
+    .note-actions {
+        display: flex;
+        gap: 20px;
+        align-items: center;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+    .play-button {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 12px 25px;
+        font-size: 17px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.2s, transform 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 4px 10px rgba(122, 90, 245, 0.3);
+    }
+    .play-button:hover {
+        background-color: var(--primary-hover);
+        transform: translateY(-2px);
+    }
+    .play-button .feather-icon {
+        width: 20px;
+        height: 20px;
+        stroke-width: 2.5;
+    }
+
+    .navigation-buttons-top-right { /* Nueva clase para los botones de navegación */
+        position: absolute;
+        top: 20px; /* Espacio desde arriba */
+        right: 40px; /* Espacio desde la derecha */
+        display: flex;
+        gap: 15px; /* Separación entre botones */
+        z-index: 101; /* Asegurarse de que estén por encima de Beethoven y el globo */
+    }
+
+    .nav-button {
+        background-color: var(--light-sidebar-bg);
+        border: 1px solid var(--light-sidebar-border);
+        color: var(--light-text-color);
+        padding: 12px 25px;
+        border-radius: 10px;
+        font-size: 17px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .app.dark .nav-button {
+        background-color: var(--dark-sidebar-bg);
+        border: 1px solid var(--dark-sidebar-border);
+        color: var(--dark-text-color);
+    }
+    .nav-button:hover {
+        background-color: var(--primary-color);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(122, 90, 245, 0.3);
+    }
+    .nav-button:hover .feather-icon {
+        color: white;
+    }
+
+    /* Estilos para el texto dentro del globo */
+    .speech-bubble p {
+        margin-bottom: 10px;
+    }
+    .speech-bubble p:last-child {
+        margin-bottom: 0;
+    }
+
+  </style>
+</head>
+<body>
+  <div id="app" class="app light">
+    <div class="container">
+      <div id="sidebar" class="sidebar">
+        <!-- Sección de Inicio -->
+        <a href="../Edutreble4.html" class="sidebar-section">
+            <strong><i data-feather="home" class="icon"></i> Inicio</strong>
+        </a>
+        <!-- Sección de Cursos (Activa) -->
+        <a href="../Edutreble-Cursos.html" class="sidebar-section" style="color: var(--primary-hover);">
+            <strong><i data-feather="book-open" class="icon" style="color: var(--primary-hover);"></i> Cursos</strong>
+        </a>
+        <!-- Sección de Comunidad -->
+        <a href="../Edutreble-Comunidad.html" class="sidebar-section">
+            <strong><i data-feather="users" class="icon"></i> Comunidad</strong>
+        </a>
+        <!-- Sección de Sobre Nosotros -->
+        <a href="../Edutreble-SobreNosotros.html" class="sidebar-section">
+            <strong><i data-feather="help-circle" class="icon"></i> Sobre nosotros</strong>
+        </a>
+      </div>
+      <div class="content">
+        <button class="menu-toggle" onclick="toggleSidebar()">
+            <i data-feather="menu"></i>
+        </button>
+        <div class="title">Nivel 1: Las Notas</div>
+
+        <!-- Botones de navegación movidos a la parte superior derecha -->
+        <div class="navigation-buttons-top-right">
+            <button id="prevBtn" class="nav-button" onclick="changeStep(-1)" disabled>
+                <i data-feather="arrow-left" class="feather-icon"></i> Anterior
+            </button>
+            <button id="nextBtn" class="nav-button" onclick="changeStep(1)">
+                Siguiente <i data-feather="arrow-right" class="feather-icon"></i>
+            </button>
+        </div>
+
+        <div class="lesson-area">
+            <!-- Notas musicales de fondo -->
+            <div class="background-notes" id="backgroundNotes"></div>
+
+            <!-- Caricatura de Beethoven -->
+            <img src="beethoven_caricatura.png" alt="Maestro Beethoven" class="beethoven-char" id="beethovenChar">
+
+            <!-- Globo de Texto -->
+            <div id="speechBubble" class="speech-bubble active">
+                <!-- El contenido de cada paso se inyectará aquí con JS -->
+            </div>
+            
+            <!-- Audios de Notas -->
+            <audio id="audioDo" src="audio/do.wav" preload="auto"></audio>
+            <audio id="audioRe" src="audio/re.wav" preload="auto"></audio>
+            <audio id="audioMi" src="audio/mi.wav" preload="auto"></audio>
+            <audio id="audioFa" src="audio/fa.wav" preload="auto"></audio>
+            <audio id="audioSol" src="audio/sol.wav" preload="auto"></audio>
+            <audio id="audioLa" src="audio/la.wav" preload="auto"></audio>
+            <audio id="audioSi" src="audio/si.wav" preload="auto"></audio>
+            
+            <!-- Audio de la "voz" de Beethoven -->
+            <audio id="beethovenVoice" src="audio/beethoven_voice.mp3" preload="auto"></audio>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+ <script>
+  const app = document.getElementById('app');
+  const sidebar = document.getElementById('sidebar');
+  const menuToggle = document.querySelector('.menu-toggle');
+  const beethovenChar = document.getElementById('beethovenChar');
+  const speechBubble = document.getElementById('speechBubble');
+  const beethovenVoice = document.getElementById('beethovenVoice');
+  const backgroundNotes = document.getElementById('backgroundNotes');
+
+  // Inicializar Feather Icons
+  feather.replace();
+
+  // Verificar si existe un tema guardado en localStorage
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme) {
+    app.className = `app ${savedTheme}`;
+  }
+
+  function toggleSidebar() {
+    sidebar.classList.toggle('hidden');
+    if (sidebar.classList.contains('hidden')) {
+        menuToggle.innerHTML = '<i data-feather="menu"></i>';
+    } else {
+        menuToggle.innerHTML = '<i data-feather="x"></i>';
+    }
+    feather.replace();
+  }
+
+  window.addEventListener('resize', () => {
+      if (window.innerWidth > 768 && sidebar.classList.contains('hidden')) {
+          sidebar.classList.remove('hidden');
+          menuToggle.innerHTML = '<i data-feather="x"></i>';
+          feather.replace();
+      }
+  });
+
+  if (window.innerWidth < 768) {
+      sidebar.classList.add('hidden');
+      menuToggle.innerHTML = '<i data-feather="menu"></i>';
+      feather.replace();
+  }
+
+  // --- Lógica para los pasos de la lección ---
+  let currentStep = 0; // Empezamos en 0 para el índice del array
+  const lessonSteps = [
+    // Paso 0: Introducción (Beethoven centrado, globo abajo)
+    {
+      text: '<p>¡Saludos, joven aprendiz! Soy Ludwig van Beethoven, y seré tu guía en este viaje musical. Prepárate para desvelar los secretos de las notas musicales.</p><p>Comenzaremos por lo básico: conocer el nombre y el sonido de cada una de ellas. ¡Presta mucha atención!</p>',
+      beethovenPos: { top: '55%', left: '50%' },
+      bubblePos: { top: '75%', left: '50%', transformX: '-50%' },
+      showPlayBtn: false
+    },
+    // Paso 1: Nota DO (Beethoven izquierda, globo derecha)
+    {
+      text: '<p><span class="note-explanation">¡Esta es la nota DO!</span> Es el punto de partida en muchas escalas y melodías. Escúchala con atención:</p><div class="note-actions"><button class="play-button" onclick="document.getElementById(\'audioDo\').play()"><i data-feather="play-circle" class="feather-icon"></i> Tocar DO</button></div>',
+      beethovenPos: { top: '40%', left: '25%' },
+      bubblePos: { top: '55%', left: '55%', transformX: '-50%' },
+      showPlayBtn: true
+    },
+    // Paso 2: Nota RE (Beethoven derecha, globo izquierda)
+    {
+      text: '<p><span class="note-explanation">Ahora, escucha la nota RE.</span> Es la segunda nota de la escala mayor de Do y tiene un sonido distintivo:</p><div class="note-actions"><button class="play-button" onclick="document.getElementById(\'audioRe\').play()"><i data-feather="play-circle" class="feather-icon"></i> Tocar RE</button></div>',
+      beethovenPos: { top: '30%', left: '75%' },
+      bubblePos: { top: '45%', left: '45%', transformX: '-50%' },
+      showPlayBtn: true
+    },
+    // Paso 3: Nota MI (Beethoven abajo izquierda, globo arriba derecha)
+    {
+      text: '<p><span class="note-explanation">¡Aquí viene MI!</span> Una nota clave que suena muy bien cuando la entiendes:</p><div class="note-actions"><button class="play-button" onclick="document.getElementById(\'audioMi\').play()"><i data-feather="play-circle" class="feather-icon"></i> Tocar MI</button></div>',
+      beethovenPos: { top: '65%', left: '30%' },
+      bubblePos: { top: '50%', left: '60%', transformX: '-50%' },
+      showPlayBtn: true
+    },
+    // Paso 4: Nota FA (Beethoven arriba derecha, globo abajo izquierda)
+    {
+      text: '<p><span class="note-explanation">Continuamos con FA.</span> Es una nota que a menudo marca un cambio en el carácter musical. ¡A ver qué te parece!</p><div class="note-actions"><button class="play-button" onclick="document.getElementById(\'audioFa\').play()"><i data-feather="play-circle" class="feather-icon"></i> Tocar FA</button></div>',
+      beethovenPos: { top: '35%', left: '70%' },
+      bubblePos: { top: '50%', left: '40%', transformX: '-50%' },
+      showPlayBtn: true
+    },
+    // Paso 5: Nota SOL (Beethoven centrado arriba, globo abajo)
+    {
+      text: '<p><span class="note-explanation">Ahora la poderosa nota SOL.</span> ¡Es una nota central en la música! Escucha su resonancia:</p><div class="note-actions"><button class="play-button" onclick="document.getElementById(\'audioSol\').play()"><i data-feather="play-circle" class="feather-icon"></i> Tocar SOL</button></div>',
+      beethovenPos: { top: '45%', left: '50%' },
+      bubblePos: { top: '65%', left: '50%', transformX: '-50%' },
+      showPlayBtn: true
+    },
+    // Paso 6: Nota LA (Beethoven abajo derecha, globo arriba izquierda)
+    {
+      text: '<p><span class="note-explanation">Y qué decir de LA.</span> Es la nota con la que se afina la orquesta. ¡Un sonido de referencia!</p><div class="note-actions"><button class="play-button" onclick="document.getElementById(\'audioLa\').play()"><i data-feather="play-circle" class="feather-icon"></i> Tocar LA</button></div>',
+      beethovenPos: { top: '60%', left: '70%' },
+      bubblePos: { top: '45%', left: '40%', transformX: '-50%' },
+      showPlayBtn: true
+    },
+    // Paso 7: Nota SI (Beethoven arriba izquierda, globo abajo derecha)
+    {
+      text: '<p><span class="note-explanation">Finalmente, la nota SI.</span> Es la última antes de volver a empezar el ciclo. ¡Casi lo tienes!</p><div class="note-actions"><button class="play-button" onclick="document.getElementById(\'audioSi\').play()"><i data-feather="play-circle" class="feather-icon"></i> Tocar SI</button></div>',
+      beethovenPos: { top: '40%', left: '30%' },
+      bubblePos: { top: '55%', left: '60%', transformX: '-50%' },
+      showPlayBtn: true
+    },
+    // Paso 8: Resumen y Siguiente (Beethoven centrado, globo abajo)
+    {
+      text: '<p>¡Excelente trabajo! Has conocido las 7 notas musicales. ¡Ahora las tienes en tu oído!</p><p>Recuerda: Do, Re, Mi, Fa, Sol, La, Si. Practícalas, escúchalas en tu música favorita y prepárate para el siguiente desafío. ¡La música te espera!</p>',
+      beethovenPos: { top: '55%', left: '50%' },
+      bubblePos: { top: '75%', left: '50%', transformX: '-50%' },
+      showPlayBtn: false
+    }
+  ];
+
+  function showStep(stepIndex) {
+    // Detener cualquier audio que se esté reproduciendo
+    document.querySelectorAll('audio').forEach(audio => audio.pause());
+
+    const stepData = lessonSteps[stepIndex];
+
+    // Actualizar contenido del globo
+    speechBubble.innerHTML = stepData.text;
+
+    // Actualizar posición de Beethoven y el globo
+    // Usamos transform: translate(-50%, -50%) para centrar el elemento por su propio eje
+    // y luego ajustamos top/left para la posición deseada
+    beethovenChar.style.left = stepData.beethovenPos.left;
+    beethovenChar.style.top = stepData.beethovenPos.top;
+    beethovenChar.style.transform = 'translate(-50%, -100%)'; /* Ajustado para que el "bottom" de Beethoven esté en el 'top' */
+
+    speechBubble.style.left = stepData.bubblePos.left;
+    speechBubble.style.top = stepData.bubblePos.top;
+    speechBubble.style.transform = `translate(${stepData.bubblePos.transformX}, -50%)`; /* Centrar horizontalmente si el left es 50% */
+    
+    // Reproducir sonido de voz de Beethoven
+    if (beethovenVoice && stepIndex !== 0) {
+        beethovenVoice.currentTime = 0;
+        beethovenVoice.play().catch(e => console.log("Error al reproducir audio:", e)); // Añadir catch para evitar errores de Promise
+    }
+
+    // Actualizar botones de navegación
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+
+    prevBtn.disabled = (stepIndex === 0);
+    nextBtn.disabled = (stepIndex === lessonSteps.length - 1);
+
+    if (stepIndex === lessonSteps.length - 1) {
+        nextBtn.innerHTML = 'Finalizar <i data-feather="check" class="feather-icon"></i>';
+        nextBtn.onclick = () => {
+            window.location.href = 'Edutreble-CursoPrincipiante.html';
+        };
+    } else {
+        nextBtn.innerHTML = 'Siguiente <i data-feather="arrow-right" class="feather-icon"></i>';
+        nextBtn.onclick = () => changeStep(1);
+    }
+    feather.replace();
+  }
+
+  function changeStep(direction) {
+    currentStep += direction;
+    if (currentStep < 0) {
+      currentStep = 0;
+    } else if (currentStep >= lessonSteps.length) {
+      currentStep = lessonSteps.length - 1;
+    }
+    showStep(currentStep);
+  }
+
+  // --- Lógica para el fondo dinámico ---
+   const notes = ['♩', '♪', '♫', '♬', '♭', '♯']; // Iconos de notas musicales
+  function createBackgroundNote() {
+      const note = document.createElement('span');
+      note.classList.add('background-note');
+      note.innerHTML = notes[Math.floor(Math.random() * notes.length)];
+      
+      // Posición inicial aleatoria, fuera de la vista para que entren flotando
+      note.style.left = Math.random() * 100 + '%';
+      note.style.top = Math.random() * 100 + '%'; // Ahora cubrirá todo el alto del contenedor
+      
+      note.style.animationDelay = Math.random() * 8 + 's'; /* Retraso más variado */
+      note.style.animationDuration = (8 + Math.random() * 12) + 's'; /* Duración entre 8s y 20s para más variedad */
+      
+      // Rotación aleatoria inicial para más diversidad
+      note.style.transform = `rotate(${Math.random() * 360}deg)`; 
+      
+      backgroundNotes.appendChild(note);
+
+      // Eliminar nota después de un tiempo prudencial
+      setTimeout(() => {
+          note.remove();
+      }, 25000); // Darles más tiempo antes de desaparecer
+  }
+
+  // Generar notas de fondo continuamente
+  // Aumentamos la frecuencia para más cantidad (antes era 2000ms = 2s)
+  setInterval(createBackgroundNote, 700); // Crear una nota cada 0.7 segundos (más cantidad)
+  // Mostrar el primer paso al cargar la página
+  document.addEventListener('DOMContentLoaded', () => {
+    showStep(currentStep);
+  });
+</script>
+</body>
+</html>
