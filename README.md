@@ -16,7 +16,7 @@ El proyecto surgió como respuesta a datos preocupantes: el **77% de los jóvene
 
 ## 🚀 Demo en vivo
 
-> 🔗 [Ver en GitHub Pages](https://TU_USUARIO.github.io/edutreble)
+> 🔗 [Ver en GitHub Pages](https://ferneyaj.github.io/Edutreble/Edutreble4.html)
 
 ---
 
